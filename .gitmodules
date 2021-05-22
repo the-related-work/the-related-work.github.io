@@ -1,0 +1,3 @@
+[submodule "src/tex/lifetime-bib"]
+	path = src/tex/lifetime-bib
+	url = https://github.com/yongchanghao/lifetime-bib

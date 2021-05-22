@@ -1,0 +1,55 @@
+\documentclass{article}
+
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{amsmath,amsfonts,amssymb,amsthm,commath}
+\usepackage[dvipsnames, table]{xcolor}
+\usepackage{ifthen}
+\usepackage{biblatex}
+\usepackage{hyperref}
+\usepackage{xargs}
+\usepackage{enumitem}
+\usepackage{parskip}
+\usepackage{titlesec}
+
+
+\addbibresource{./lifetime-bib/lifetime.bib}
+\addbibresource{adhoc.bib}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}{Example}[theorem]
+\newtheorem{property}{Property}[theorem]
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{claim}{Claim}
+\newtheorem*{note}{Note}
+\newtheorem*{summary}{Summary}
+
+\newcommand{\E}[1]{\mathbb{E} \left[ #1 \right]}
+\newcommand{\dd}[1]{{\mathrm{d}#1}}
+\newcommand{\eps}{\epsilon}
+\newcommand{\bbR}[0]{\mathbb{R}}
+\newcommand{\var}[1]{\mathop{Var} \left[ #1 \right]}
+\newcommand{\lip}[1]{\mathcal{#1}\mathrm{-Lipschitz}}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1ex}
+\titlespacing*{\paragraph}{0em}{\parskip}{1em}
+\setlist{nosep,topsep=-\parskip}
+
+\hypersetup{
+    colorlinks = true,
+    allcolors = blue
+}
+
+\begin{document}
+\section*{2021}
+\input{sections/2021/may.tex}
+\end{document}
