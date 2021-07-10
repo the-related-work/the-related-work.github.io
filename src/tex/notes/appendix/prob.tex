@@ -1,0 +1,18 @@
+\section{Concentration Inequalities}
+
+\subsection{Hoeffding's Inequality}
+
+\begin{lemma}[Markov's Inequality]\label{lem:markov_ineq}
+  For any nonnegative random variable $X > 0$ and constant $\eps > 0$,
+  $$\Pr(X \ge \eps) \le \frac{\E{X}}{\eps}$$
+\end{lemma}
+
+\begin{proof}[Proof of Lemma~\ref{lem:markov_ineq}]
+  \[
+    \Pr(X \ge \eps) =  \int_{\eps}^{\infty} \Pr(x) \dd{x}
+    \le \int_{\eps}^{\infty} \frac{x}{\eps} \Pr(x) \dd{x}
+    \le \frac{1}{\eps} \int_{0}^{\infty} x \Pr(x) \dd{x}
+    = \frac{\E{X}}{\eps}
+    \qedhere
+  \]
+\end{proof}

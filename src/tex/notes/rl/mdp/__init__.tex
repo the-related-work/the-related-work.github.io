@@ -1,0 +1,163 @@
+\section{Basic Definitions}
+
+In this section, we mainly illustrate the foundations of Markov Decision Process (MDP). Most of the content in this section can be found our main reference book~\cite{puterman2014markov} for this section. We will start with the foundations of MDP, and gradually illustrate how to fit the reinforcement learning into the MDP framework.
+
+\subsection{Introduction}
+
+\begin{definition}[Markov Decision Process (MDP)]\label{def:mdp}
+    $\mathrm{MDP} = (\mathcal{S}, \mathcal{A}, \mathcal{P}, \mathcal{R}, \gamma)$
+    \TODO{complete}
+\end{definition}
+
+\begin{assumption}\label{asp:discrete-state-space}
+    The state space $ \calS $ is discrete.
+\end{assumption}
+\begin{assumption}
+    The reward function $r \in \calR$ is stationary and bounded by $|r(\cdot, \cdot)| \le M < \infty $.
+\end{assumption}
+\begin{assumption}
+    The environment dynamics $P \in \calP$ is stationary.
+\end{assumption}
+\begin{assumption}
+    The discount factor $0 \le \gamma < 1$.
+\end{assumption}
+
+
+\begin{definition}[Policy]\label{def:policy}
+    A policy $\Pi=[\pi_0, \pi_1, \dots]$ is a sequence of decision functions  $\pi: \calS^\bbN \to \dist{\calA}$, where $\calS^\bbN$ is the space of history states and $\dist{\calA}$ is the distribution space over $\calA$. A policy $\Pi$ is \begin{itemize}
+        \item \emph{Markovian} if for each $\pi \in \Pi$ satisfies $\pi: \calS \to \dist{\calA}$, which means it only depends on the last state.
+        \item \emph{Stationary} if $\Pi = [\pi, \pi, \dots]$.
+        \item \emph{Deterministic} if for each $\pi \in \Pi$ satisfies $\pi: \calS^\bbN \to \calA$.
+    \end{itemize}
+    
+\end{definition}
+
+
+\begin{definition}[Trajectory]\label{def:trajectory}
+    A trajectory $\tau_{\Pi}$ is an observation of a MDP with a policy $\Pi$.
+    At each time step $t$, we denote the current state by $S_t \in \calS$. An action $A_t \in \calA$ is chosen according to $\pi_t$, which leads to the next state $S_{t+1}$ with probability $P(S_{t+1} | S_t, A_t)$, and receive an immediate reward $r(S_t, A_t)$ according to reward function $r \in \calR$.
+
+    Therefore, a trajectory is a sequence of random variables that follows a MDP and a policy $\Pi$: \begin{align}
+        \tau_{\Pi} = \left(S_0, A_0, S_1, A_1, \dots   \right)
+    \end{align}
+\end{definition}
+
+As we are supposed to manipulate the policy to achieve our goal, we have to define what our goal is first.
+
+\begin{definition}[Criteria of Policies]
+    There are several commonly used criteria:
+    \begin{itemize}
+        \item Expected accumulated reward: $\E \left[ \sum_{t=0}^H \gamma^t r(S_t, A_t) \right]$
+        \item Expected average reward: $\E \left[ \frac{1}{H}\sum_{t=0}^H \gamma^t r(S_t,A_t) \right]$
+    \end{itemize}
+    We term the MDP \emph{infinite horizon} when ${H \to \infty}$, and \emph{episodic} otherwise.
+\end{definition}
+We will mainly study the infinite horizon accumulated discounted reward afterwards.
+
+\begin{proposition}
+    To precisely describe the randomness of trajectory, we use $\P_\Pi(\calS^\bbN, \calA)$ to denote the probability in a trajectory under policy $\Pi$.
+\end{proposition}
+
+\begin{theorem}~\label{thm:markovian-policy}
+    For any history-dependent policy $\Pi=(\pi_0, \pi_1, \dots)$, there exists a markov policy $\Pi'=(\pi_0', \pi_1', \dots)$ that \begin{align}
+        \mathrm{\P}_{\Pi} \left( S_t, A_t | s_0 \right)
+       =\mathrm{\P}_{\Pi'} \left (S_t, A_t | s_0 \right)
+    \end{align}
+    for any time step $t$.
+    $\P_{\Pi}(\cdot | s_0)$ denotes the joint distribution of state and action in the trajectory with $\Pi=(\pi_0, \pi_1, \dots)$ and initial state $s_0$.
+\end{theorem}
+
+\begin{proof}
+    \TODO{complete}
+\end{proof}
+
+From now on, by Theorem~\ref{thm:markovian-policy}, we will expect every policy $\pi_t \in \Pi$ is Markovian, which makes the problem much easier.
+
+\begin{definition}[Value Functions]\label{def:value-functions}
+    Typically, when  we refer \emph{state-value function} as
+    \begin{align}
+        v_\Pi(s) &:= \E_{\tau_{\Pi}} \left[ \sum_{t=0}^{\infty} \gamma^t r(S_t, A_t)  \Bigm| S_0 = s \right] \label{eq:def-state-value-function}    
+    \end{align}
+    and \emph{action-value function} as
+    \begin{align}
+        q_\Pi(s) &:= \E_{\tau_{\Pi}} \left[ \sum_{t=0}^{\infty} \gamma^t r(S_t, A_t)  \Bigm| S_0 = s, A_0 = a \right] \label{eq:def-action-value-function}
+    \end{align}
+\end{definition}
+
+The value functions are at core of MDP. The following equations are essentially the Bellman Equation. 
+\begin{property}[Bellman Equation for State-Value Funciton]
+    \begin{align}
+        v_\Pi(s) &= \E_{a' \sim \Pi^{(0)}(s)} \left[ r(s, a') + \E_{s' \sim P(s, a')} \left[\E_{\tau_{\Pi}} \left[ \sum_{t=1}^{\infty} \gamma^t r(S_t, A_t) \Bigm| S_1 = s' \right]\right]\right] \nonumber   \\
+            &= \E_{a' \sim \Pi^{(0)}(s)} \left[ r(s, a') + \E_{s' \sim P(s, a')} \left[\E_{\tau_{\Pi'}} \left[ \sum_{t=0}^{\infty} \gamma^{t+1} r(S_t, A_t) \Bigm| S_0 = s' \right]\right]\right] \nonumber   \\
+            &= \E_{a' \sim \Pi^{(0)}(s)} \left[ r(s, a') +  \gamma \E_{s' \sim P(s, a')} \left[ v_{\Pi'}(s') \right]\right] \label{eq:state-value-function}
+    \end{align}
+\end{property}
+
+\begin{property}[Bellman Equation for Action-Value Funciton]
+    \begin{align}
+        q_\Pi(s, a) &=  r(s, a) + \E_{s' \sim P(s, a)} \left[\E_{\tau_{\Pi}} \left[ \sum_{t=1}^{\infty} \gamma^t r(S_t, A_t) \Bigm| S_1 = s' \right]\right] \nonumber \\
+            &= r(s, a) + \E_{s' \sim P(s, a)} \left[\E_{\tau_{\Pi'}} \left[ \sum_{t=0}^{\infty} \gamma^{t+1} r(S_t, A_t) \Bigm| S_0 = s' \right]\right] \nonumber  \\
+            &= r(s, a) +  \gamma \E_{s' \sim P(s, a)} \left[ v_{\Pi'}(s') \right] \label{eq:action-value-function}
+    \end{align}
+\end{property}
+
+\begin{definition}[Optimal Policy]\label{def:optimal-policy}
+    For any state $s \in \calS$, the optimal policy is
+    \begin{align}
+        \Pi^* &:= \mathop{\arg \max}_\Pi v_\Pi(s) \nonumber
+    \end{align}
+    The corresponding optimal value function is \begin{align}v^*_\Pi(s) = v_{\Pi^*}(s) \nonumber \end{align}
+\end{definition}
+
+\section{Vector Notation}
+Because of the Assumption~\ref{asp:discrete-state-space}, the $v_\Pi(s)$ can be written as a vector in $\bbR^{|\calS|}$ as $\vect{v}_\Pi$.
+Denoting $r_\pi(s) := \E_{a \sim \pi(s)} \left[ r(s, a) \right]$, we also have veter notation of reward as $\vect{r}_\pi \in \bbR^{|\calS|}$.
+With a minor abuse of notation, we write $P_\pi(s, s') := \E_{a \sim \pi(s)} \left[ P(s, a)(s') \right]$, which can be viewed as a matrix $\vect{P}_\pi$ of $\bbR^{|\calS|\times|\calS|}$.
+
+By the vector notations, the previous Bellman Equation~\ref{eq:state-value-function} can thus be rewrite as
+$\displaystyle
+    \vect{v}_\Pi  = \vect{r}_{\pi_0} + \gamma \vect{P}_{\pi_0} \vect{v}_{\Pi'} \nonumber
+$.
+Or \begin{align}
+    \vect{v}  = \vect{r}_{\pi} + \gamma \vect{P}_{\pi} \vect{v}' \label{eq:vector-bellman}
+\end{align} for generality.
+
+In some special cases that we will mention later, $\vect{v} = \vect{v}'$ holds. In such cases, by solving the equation~\ref{eq:vector-bellman}, we have
+$$\vect{v} = (\vect{I} - \gamma \vect{P}_\pi)^{-1} \vect{r}_\pi$$.
+
+\begin{lemma}
+    If $\vect{v} = \vect{v}'$, $\vect{v} = (\vect{I} - \gamma \vect{P}_\pi)^{-1} \vect{r}_\pi$ is the unique solution of Bellman Equation~\ref{eq:vector-bellman}.
+\end{lemma}
+
+\begin{proof}
+    \TODO{complete}
+\end{proof}
+
+\begin{example}
+    If policy $\Pi$ is stationary, meaning $\Pi = (\pi, \pi, \dots)$, it is obvious that $v_\Pi(s) = v_{\Pi'}(s)$, or $\vect{v} = \vect{v}'$. Thus $\vect{v} = (\vect{I} - \gamma \vect{P}_\pi)^{-1} \vect{r}_\pi$ is the unique solution for state-value function with stationary policies.
+\end{example}
+
+
+
+\begin{theorem}[Bellman Optimality Equation]\label{thm:bellman-optimality}
+    For the optimal value function $v^*(s)$ or $q^*(s, a)$, the following equations hold: \begin{align}
+        v^*(s) = \max_{a'} \left[ r(s, a') + \gamma \E_{s' \sim P(s, a')} \left[ v^*(s')\right]  \right]
+    \end{align} \begin{align}
+        q^*(s, a) = r(s, a) + \gamma \E_{s' \sim P(s, a)} \left[ \max_{a'}  q^*(s', a')\right] 
+    \end{align}
+\end{theorem}
+\begin{proof}[Proof of Theorem~\ref{thm:bellman-optimality}]~\label{prf:bellman-optimality}
+    \TODO{complete}
+\end{proof}
+
+Theorem~\ref{thm:bellman-optimality} indicates that the optimal policy comes from choosing the best action greedily at each step.
+
+
+\begin{lemma}[Banach Fixed-Point Theorem]
+    If $F: U \to U$ satisfies $\|F(u) - F(v)\| \le \gamma \|u-v\|$, where $0\le \gamma < 1$, there exists a unique point $v^* \in U$ that $F(v^*) = v^*$. 
+\end{lemma}
+
+\begin{note}
+    Since we will show later that the optimal policy could be Markovian, stationary, and deterministic, we use $\pi: \calS \to \calA$ to indicate a policy directly.
+\end{note}
+\note{We derive the optimal policy from the optimal value function which is based on the optimial  policy?}

@@ -1,0 +1,100 @@
+\documentclass{book}
+
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{amsmath,amsfonts,amssymb,amsthm,commath}
+\usepackage[dvipsnames, table]{xcolor}
+\usepackage{ifthen}
+\usepackage{biblatex}
+\usepackage{hyperref}
+\usepackage{xargs}
+\usepackage{enumitem}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{bm}
+\usepackage{setspace}
+
+
+
+\addbibresource{./lifetime-bib/lifetime.bib}
+\addbibresource{adhoc.bib}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{property}{Property}[theorem]
+\newtheorem{assumption}[theorem]{Assumption}
+
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{claim}{Claim}
+\newtheorem*{summary}{Summary}
+\newtheorem*{note}{Note}
+
+\def\ddefloop#1{\ifx\ddefloop#1\else\ddef{#1}\expandafter\ddefloop\fi}
+\def\ddef#1{\expandafter\def\csname bb#1\endcsname{\ensuremath{\mathbb{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
+\def\ddef#1{\expandafter\def\csname cal#1\endcsname{\ensuremath{\mathcal{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
+\def\ddef#1{\expandafter\def\csname frak#1\endcsname{\ensuremath{\mathfrak{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
+\def\ddef#1{\expandafter\def\csname h#1\endcsname{\ensuremath{\hat{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
+
+% \newcommand{\ip}[2]{\left\langle #1, #2 \right \rangle}
+\newcommand{\E}{\mathop{\mathbb{E}}}
+\renewcommand{\P}{\mathop{\mathbb{P}}}
+
+\newcommand{\dd}[1]{{\mathrm{d}#1}}
+\newcommand{\eps}{\epsilon}
+\newcommand{\var}[1]{\mathop{Var} \left[ #1 \right]}
+\newcommand{\lip}[1]{\mathcal{#1}\mathrm{-Lipschitz}}
+\newcommand{\dist}[1]{\Delta\left(#1\right)}
+\newcommand{\given}{\middle\vert}
+\newcommand{\vect}[1]{\bm{#1}}
+
+\newcommand{\TODO}[1]{{\textcolor{red}{TODO: #1}}}
+% \newcommand{\note}[1]{\begin{framed}#1\end{framed}}
+
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1ex}
+\titlespacing*{\paragraph}{0em}{\parskip}{1em}
+\setlist{nosep,topsep=-\parskip}
+
+\linespread{1.15}
+
+\title{Machine Learning Algorithms}
+\author{Yongchang Hao}
+\date{\today}
+
+\begin{document}
+\setlength{\abovedisplayskip}{0em}
+\setlength{\belowdisplayskip}{0em}
+\setlength{\abovedisplayshortskip}{0em}
+\setlength{\belowdisplayshortskip}{0em}
+
+\maketitle
+\tableofcontents
+
+\part{Supervised Learning}
+
+\chapter{Neural Networks}
+
+\part{Reinforcement Learning}\input{notes/rl/__init__.tex}
+
+\appendix
+
+\part*{Appendix}\label{part:apdx}\addcontentsline{toc}{part}{Appendix}
+
+\chapter{Calculus}\input{notes/appendix/calc.tex}
+\chapter{Probability and Statistics}\input{notes/appendix/prob.tex}
+
+\printbibliography
+\end{document}
